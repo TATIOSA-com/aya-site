@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AYA — Are You Around? | Events & Experiences in Armenia</title>
+  <meta name="description" content="Discover events, festivals, concerts, tours, food experiences, wine festivals, and cultural happenings across Armenia with AYA — Are You Around?" />
+  <meta name="keywords" content="events in Armenia, things to do in Armenia, festivals in Armenia, Yerevan events, concerts in Armenia, Armenia travel experiences, wine festivals Armenia, cultural events Armenia" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="AYA" />
+  <meta name="theme-color" content="#050505" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AYA — Are You Around? | Events & Experiences in Armenia" />
+  <meta property="og:description" content="Discover events, festivals, concerts, tours, food experiences, wine festivals, and cultural happenings across Armenia with AYA — Are You Around?" />
+  <meta property="og:site_name" content="AYA" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AYA — Are You Around? | Events & Experiences in Armenia" />
+  <meta name="twitter:description" content="Discover events, festivals, concerts, tours, food experiences, wine festivals, and cultural happenings across Armenia with AYA — Are You Around?" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AYA",
+    "alternateName": "Are You Around",
+    "description": "Events and experiences in Armenia, including festivals, concerts, tours, wine events, food experiences, and cultural happenings.",
+    "inLanguage": "en",
+    "about": {
+      "@type": "Place",
+      "name": "Armenia"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://aya.am/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --bg: #050505;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.72);
+      --muted-2: rgba(255,255,255,.55);
+      --muted-3: rgba(255,255,255,.35);
+      --panel: rgba(255,255,255,.09);
+      --panel-border: rgba(255,255,255,.16);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: #000;
+    }
+
+    .video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.48) 45%, rgba(0,0,0,.35) 100%);
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      min-height: calc(100vh - 24px);
+    }
+
+    .left, .right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrap,
+    .left,
+    .right,
+    .feed-card,
+    .iframe-shell,
+    .iframe-container {
+      align-self: stretch;
+    }
+
+
+    .left {
+      gap: 28px;
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 4px 0;
+    }
+
+    .brand {
+      font-size: clamp(40px, 7vw, 80px);
+      font-weight: 900;
+      letter-spacing: -.06em;
+      line-height: 1;
+    }
+
+    .lang-wrap {
+      position: relative;
+    }
+
+    .lang-select {
+      border: 1px solid rgba(255,255,255,.28);
+      text-align: start;
+      direction: ltr;
+      unicode-bidi: isolate;
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding: 10px 38px 10px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, white 50%), linear-gradient(135deg, white 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      min-width: 132px;
+    }
+
+    .lang-select option {
+      color: #111;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hero {
+      padding-top: 8px;
+      max-width: 480px;
+    }
+
+    .hero h1 {
+      margin: 0 0 16px;
+      font-size: clamp(52px, 8vw, 108px);
+      line-height: .94;
+      letter-spacing: -.06em;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 0 0 28px;
+      font-size: clamp(18px, 2.2vw, 22px);
+      line-height: 1.6;
+      color: var(--muted);
+      font-weight: 350;
+      max-width: 380px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 28px;
+      background: #fff;
+      color: #000;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .btn-primary:hover { transform: translateY(-1px); opacity: .95; }
+
+    .seo-box {
+      display: none;
+      margin-top: auto;
+    }
+
+    .seo-box h2, .mobile-seo h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .seo-box p, .mobile-seo p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--muted-2);
+      font-weight: 350;
+    }
+
+    .seo-box strong, .mobile-seo strong { color: #fff; font-weight: 700; }
+
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow);
+    }
+
+    .cta-card {
+      display: none;
+      padding: 22px;
+    }
+
+    .cta-card h3, .mobile-cta h3 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+    }
+
+    .cta-card p, .mobile-cta p {
+      margin: 0 0 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--muted-2);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 20px;
+      background: #fff;
+      color: #000;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .feed-card {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 96px);
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .feed-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 4px 18px;
+    }
+
+    .feed-head small {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.54);
+    }
+
+    .feed-line {
+      margin-top: 7px;
+      width: 48px;
+      height: 2px;
+      background: rgba(255,255,255,.2);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.42);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #dc2626;
+      box-shadow: 0 0 12px rgba(220,38,38,.82);
+      animation: pulse .9s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: .4; }
+    }
+
+    .iframe-shell {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .iframe-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #000;
+    }
+
+    .iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: auto;
+      border: 0;
+      width: 111.11%;
+      height: 111.11%;
+      transform: scale(.9);
+      transform-origin: 0 0;
+      display: block;
+      background: #000;
+    }
+
+    [dir="rtl"] .iframe-container iframe {
+      left: auto;
+      right: 0;
+      transform-origin: 100% 0;
+    }
+
+    .corner-top,
+    .corner-bottom {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .corner-top {
+      top: 0;
+      right: 0;
+      border-top: 1px solid rgba(255,255,255,.2);
+      border-right: 1px solid rgba(255,255,255,.2);
+      border-top-right-radius: 18px;
+    }
+
+    .corner-bottom {
+      bottom: 0;
+      left: 0;
+      border-bottom: 1px solid rgba(255,255,255,.2);
+      border-left: 1px solid rgba(255,255,255,.2);
+      border-bottom-left-radius: 18px;
+    }
+
+    .mobile-cta, .mobile-seo {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .credit-strip {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,.35);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .24em;
+      flex-wrap: wrap;
+    }
+
+    .credit-strip .line {
+      width: 16px;
+      height: 1px;
+      background: rgba(255,255,255,.2);
+    }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      padding: 10px 16px 12px;
+      background: rgba(0,0,0,.42);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,.06);
+      margin-top: 18px;
+    }
+
+    .footer-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .footer-wrap p,
+    .footer-wrap a {
+      font-size: 9px;
+      color: rgba(255,255,255,.42);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+    }
+
+    [dir="rtl"] body,
+    [dir="rtl"] .app,
+    [dir="rtl"] .content,
+    [dir="rtl"] .hero,
+    [dir="rtl"] .seo-box,
+    [dir="rtl"] .mobile-seo,
+    [dir="rtl"] .cta-card,
+    [dir="rtl"] .mobile-cta,
+    [dir="rtl"] .footer-wrap { text-align: right; }
+
+    [dir="rtl"] .brand-row,
+    [dir="rtl"] .feed-head,
+    [dir="rtl"] .footer-wrap {
+      direction: rtl;
+    }
+
+    [dir="rtl"] .lang-select {
+      padding: 10px 14px 10px 38px;
+      background-position: 18px calc(50% - 2px), 24px calc(50% - 2px);
+    }
+
+    @media (min-width: 1024px) {
+      .content { padding: 20px 28px 12px; }
+      .wrap {
+        grid-template-columns: 420px 1fr;
+        gap: 32px;
+        min-height: calc(100vh - 44px);
+      }
+      .seo-box, .cta-card { display: block; }
+      .mobile-cta, .mobile-seo { display: none; }
+      .feed-card { min-height: calc(100vh - 68px); height: calc(100vh - 68px); padding: 22px; }
+      .credit-strip {
+        position: absolute;
+        bottom: 14px;
+        right: 40px;
+        margin-top: 0;
+      }
+      [dir="rtl"] .credit-strip {
+        right: auto;
+        left: 40px;
+      }
+      footer { margin-top: 0; }
+      .footer-wrap {
+        flex-direction: row;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content { padding: 12px; }
+      .hero p { max-width: none; }
+      .feed-card { min-height: 72vh; }
+      .iframe-shell { min-height: 560px; }
+      .brand-row { align-items: flex-start; }
+      .lang-select { padding: 9px 34px 9px 12px; font-size: 11px; min-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="video-bg" aria-hidden="true">
+      <video autoplay muted loop playsinline>
+        <source src="https://api.armenia.travel/storage/Travel-Armenia_Hero-video-edit_08142025-2-15.mp4#t=0.1" type="video/mp4" />
+      </video>
+      <div class="video-overlay"></div>
+    </div>
+
+    <main class="content">
+      <div class="wrap">
+        <section class="left">
+          <div class="brand-row">
+            <div class="brand">AYA</div>
+            <div class="lang-wrap">
+              <label class="sr-only" for="langSelect">Language</label>
+              <select class="lang-select" id="langSelect" aria-label="Language selector">
+                <option value="en">English</option>
+                <option value="hy">Հայերեն</option>
+                <option value="ru">Русский</option>
+                <option value="ar">العربية</option>
+                <option value="fa">فارسی</option>
+              </select>
+            </div>
+          </div>
+
+          <section class="hero">
+            <h1 id="heroTitle">Are You<br>Around?</h1>
+            <p id="heroSub">Discover events, festivals, and experiences happening across Armenia in real-time. Don’t miss a beat.</p>
+            <a class="btn-primary" href="#explore" id="exploreBtn">Explore What’s On →</a>
+          </section>
+
+          <section class="seo-box">
+            <h2 id="expTitle">Experience Armenia</h2>
+            <p id="expText">From the world-renowned <strong>wine festivals in Armenia</strong> to intimate jazz sessions and <strong>Yerevan events</strong>, AYA keeps you connected to what’s happening now. Explore <strong>cultural events in Armenia</strong>, vibrant live music, local food gatherings, scenic tours, and unforgettable <strong>outdoor adventures</strong> across the country.</p>
+          </section>
+
+          <section class="cta-card glass">
+            <h3 id="ctaTitle">List Your Event on AYA</h3>
+            <p id="ctaSub">Reach tourists and locals instantly. Increase bookings. Free to join.</p>
+            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtn">↗ List Your Event</a>
+          </section>
+        </section>
+
+        <section class="right">
+          <div class="feed-card glass">
+            <div class="feed-head">
+              <div>
+                <small id="liveFeed">Live Event Feed</small>
+                <div class="feed-line"></div>
+              </div>
+              <div class="status"><span id="realTime">Real-time update</span><span class="dot"></span></div>
+            </div>
+
+            <div class="iframe-shell" id="explore">
+              <div class="iframe-container">
+                <iframe src="https://server.tatiosa.pro/events?k=OTA-1001" title="Events in Armenia Feed" loading="lazy"></iframe>
+              </div>
+              <div class="corner-top"></div>
+              <div class="corner-bottom"></div>
+            </div>
+          </div>
+
+          <section class="mobile-cta glass">
+            <h3 id="ctaTitleMobile">List Your Event on AYA</h3>
+            <p id="ctaSubMobile">Reach tourists and locals instantly. Increase bookings. Free to join.</p>
+            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtnMobile">↗ List Your Event</a>
+          </section>
+
+          <section class="mobile-seo glass">
+            <h2 id="expTitleMobile">Experience Armenia</h2>
+            <p id="expTextMobile">From the world-renowned <strong>wine festivals in Armenia</strong> to intimate jazz sessions and <strong>Yerevan events</strong>, AYA keeps you connected to what’s happening now. Explore <strong>cultural events in Armenia</strong>, vibrant live music, local food gatherings, scenic tours, and unforgettable <strong>outdoor adventures</strong> across the country.</p>
+          </section>
+        </section>
+      </div>
+
+      <div class="credit-strip">
+        <span>Video © Armenia.Travel</span>
+        <span class="line"></span>
+        <span>AYA Platform Discovery</span>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-wrap">
+        <p id="footerText">© 2026 AYA — Are You Around?</p>
+</div>
+    </footer>
+  </div>
+
+  <script>
+    const translations = {
+      /*
+        =========================================
+        EDIT TRANSLATIONS HERE
+        - label: text shown inside the language dropdown
+        - dir: use 'ltr' or 'rtl'
+        - heroTitle: you can keep <br> to break the line
+        - expText: HTML is allowed here (for example <strong>...</strong>)
+        =========================================
+      */
+      en: {
+        label: 'English',
+        dir: 'ltr',
+        heroTitle: 'Are You<br>Around?',
+        heroSub: 'Discover events, festivals, and experiences happening across Armenia in real-time. Don’t miss a beat.',
+        exploreBtn: 'Explore What’s On →',
+        expTitle: 'Experience Armenia',
+        expText: 'From the world-renowned <strong>wine festivals in Armenia</strong> to intimate jazz sessions and <strong>Yerevan events</strong>, AYA keeps you connected to what’s happening now. Explore <strong>cultural events in Armenia</strong>, vibrant live music, local food gatherings, scenic tours, and unforgettable <strong>outdoor adventures</strong> across the country.',
+        ctaTitle: 'List Your Event on AYA',
+        ctaSub: 'Reach tourists and locals instantly. Increase bookings. Free to join.',
+        ctaBtn: '↗ List Your Event',
+        liveFeed: 'Live Event Feed',
+        realTime: 'Real-time update',
+        footerText: '© 2026 AYA — Are You Around?',
+        listEventFooter: 'List Event'
+      },
+      hy: {
+        label: 'Հայերեն',
+        dir: 'ltr',
+        heroTitle: 'Դու<br>այստեղ ես',
+        heroSub: 'Բացահայտիր միջոցառումները, փառատոնները և փորձառությունները, որոնք այս պահին տեղի են ունենում Հայաստանի տարբեր անկյուններում։ Ոչ մի կարևոր պահ բաց մի թող։',
+        exploreBtn: 'Տես՝ ինչ է տեղի ունենում →',
+        expTitle: 'Բացահայտիր Հայաստանը',
+        expText: 'Հայաստանում հայտնի <strong>գինու փառատոններից</strong> մինչև ջազային երեկոներ ու <strong>Երևանի միջոցառումներ</strong>, AYA-ն քեզ կապում է այն ամենի հետ, ինչ կատարվում է հենց հիմա։ Բացահայտիր <strong>մշակութային միջոցառումները Հայաստանում</strong>, կենդանի երաժշտությունը, գաստրոնոմիկ փորձառությունները, տուրերը և հիշարժան <strong>բացօթյա արկածները</strong> ամբողջ երկրով մեկ։',
+        ctaTitle: 'Տեղադրիր քո միջոցառումը AYA-ում',
+        ctaSub: 'Արագ հասիր զբոսաշրջիկներին և տեղացիներին։ Ավելացրու ամրագրումները։ Միանալն անվճար է։',
+        ctaBtn: '↗ Տեղադրել միջոցառումը',
+        liveFeed: 'Միջոցառումների ուղիղ հոսք',
+        realTime: 'Թարմացվում է ուղիղ',
+        footerText: '© 2026 AYA — Are You Around?',
+        listEventFooter: 'Տեղադրել միջոցառում'
+      },
+      ru: {
+        label: 'Русский',
+        dir: 'ltr',
+        heroTitle: 'Вы<br>рядом?',
+        heroSub: 'Узнавайте о событиях, фестивалях и мероприятиях, происходящих в Армении в режиме реального времени. Не пропустите самое интересное.',
+        exploreBtn: 'Узнать, что происходит →',
+        expTitle: 'Почувствуйте Армению',
+        expText: 'От всемирно известных <strong>винных фестивалей в Армении</strong> до камерных джазовых вечеров и <strong>событий в Ереване</strong>, AYA помогает быть ближе ко всему, что происходит сейчас. Исследуйте <strong>культурные мероприятия в Армении</strong>, живую музыку, гастрономические события, туры и <strong>активный отдых</strong> по всей стране.',
+        ctaTitle: 'Разместите свое событие на AYA',
+        ctaSub: 'Мгновенно охватите туристов и местных жителей. Увеличьте количество бронирований. Присоединиться бесплатно.',
+        ctaBtn: '↗ Разместить событие',
+        liveFeed: 'Лента событий',
+        realTime: 'Обновление в реальном времени',
+        footerText: '© 2026 AYA - Вы рядом?',
+        listEventFooter: 'Разместить событие'
+      },
+      ar: {
+        label: 'العربية',
+        dir: 'rtl',
+        heroTitle: 'هل أنت<br>هنا؟',
+        heroSub: 'اكتشف الفعاليات والمهرجانات والتجارب التي تحدث في جميع أنحاء أرمينيا في الوقت الفعلي. لا تفوت أي لحظة.',
+        exploreBtn: 'استكشف ما يحدث ←',
+        expTitle: 'اكتشف أرمينيا',
+        expText: 'من <strong>مهرجانات النبيذ في أرمينيا</strong> الشهيرة إلى أمسيات الجاز الهادئة و<strong>فعاليات يريفان</strong>، تساعدك AYA على متابعة كل ما يحدث الآن. استكشف <strong>الفعاليات الثقافية في أرمينيا</strong>، والموسيقى الحية، وتجارب الطعام، والجولات، و<strong>المغامرات الخارجية</strong> في أنحاء البلاد.',
+        ctaTitle: 'أدرج فعاليتك على AYA',
+        ctaSub: 'صل مباشرة إلى السياح والسكان المحليين. زد الحجوزات. الانضمام مجاني.',
+        ctaBtn: '↗ أدرج فعاليتك',
+        liveFeed: 'خلاصة الفعاليات المباشرة',
+        realTime: 'تحديث مباشر',
+        footerText: '© 2026 AYA - هل أنت هنا؟',
+        listEventFooter: 'أدرج فعالية'
+      },
+      fa: {
+        label: 'فارسی',
+        dir: 'rtl',
+        heroTitle: 'اطراف<br>هستی؟',
+        heroSub: 'رویدادها، جشنواره‌ها و تجربه‌هایی را که در سراسر ارمنستان در حال برگزاری هستند، لحظه‌ای کشف کنید. هیچ لحظه‌ای را از دست ندهید.',
+        exploreBtn: 'ببین چه خبر است ←',
+        expTitle: 'ارمنستان را تجربه کنید',
+        expText: 'از <strong>جشنواره‌های شراب در ارمنستان</strong> تا اجرای جاز صمیمی و <strong>رویدادهای ایروان</strong>، AYA شما را به اتفاقات لحظه‌ای کشور متصل نگه می‌دارد. <strong>رویدادهای فرهنگی در ارمنستان</strong>، موسیقی زنده، تجربه‌های غذایی، تورها و <strong>ماجراجویی‌های فضای باز</strong> را در سراسر کشور کشف کنید.',
+        ctaTitle: 'رویداد خود را در AYA ثبت کنید',
+        ctaSub: 'فوراً به گردشگران و مردم محلی دسترسی پیدا کنید. رزروها را افزایش دهید. عضویت رایگان است.',
+        ctaBtn: '↗ ثبت رویداد',
+        liveFeed: 'فید زنده رویدادها',
+        realTime: 'به‌روزرسانی لحظه‌ای',
+        footerText: '© 2026 AYA - اطراف هستی؟',
+        listEventFooter: 'ثبت رویداد'
+      }
+    };
+
+    const ids = {
+      heroTitle: document.getElementById('heroTitle'),
+      heroSub: document.getElementById('heroSub'),
+      exploreBtn: document.getElementById('exploreBtn'),
+      expTitle: document.getElementById('expTitle'),
+      expText: document.getElementById('expText'),
+      expTitleMobile: document.getElementById('expTitleMobile'),
+      expTextMobile: document.getElementById('expTextMobile'),
+      ctaTitle: document.getElementById('ctaTitle'),
+      ctaSub: document.getElementById('ctaSub'),
+      ctaBtn: document.getElementById('ctaBtn'),
+      ctaTitleMobile: document.getElementById('ctaTitleMobile'),
+      ctaSubMobile: document.getElementById('ctaSubMobile'),
+      ctaBtnMobile: document.getElementById('ctaBtnMobile'),
+      liveFeed: document.getElementById('liveFeed'),
+      realTime: document.getElementById('realTime'),
+      footerText: document.getElementById('footerText')
+    };
+
+    const langSelect = document.getElementById('langSelect');
+
+    // To update any wording later, edit the translations object above.
+    function setLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = t.dir;
+      ids.heroTitle.innerHTML = t.heroTitle;
+      ids.heroSub.textContent = t.heroSub;
+      ids.exploreBtn.innerHTML = t.exploreBtn;
+      ids.expTitle.textContent = t.expTitle;
+      ids.expText.innerHTML = t.expText;
+      ids.expTitleMobile.textContent = t.expTitle;
+      ids.expTextMobile.innerHTML = t.expText;
+      ids.ctaTitle.textContent = t.ctaTitle;
+      ids.ctaSub.textContent = t.ctaSub;
+      ids.ctaBtn.textContent = t.ctaBtn;
+      ids.ctaTitleMobile.textContent = t.ctaTitle;
+      ids.ctaSubMobile.textContent = t.ctaSub;
+      ids.ctaBtnMobile.textContent = t.ctaBtn;
+      ids.liveFeed.textContent = t.liveFeed;
+      ids.realTime.textContent = t.realTime;
+      ids.footerText.textContent = t.footerText;
+      langSelect.value = lang;
+      localStorage.setItem('aya_lang', lang);
+    }
+
+    langSelect.addEventListener('change', function () {
+      setLanguage(this.value);
+    });
+
+    setLanguage(localStorage.getItem('aya_lang') || 'en');
+  </script>
+</body>
+</html>
