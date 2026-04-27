@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZWBX91HEDJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -558,7 +558,10 @@
           <section class="hero">
             <h1 id="heroTitle">Are You<br>Around?</h1>
             <p id="heroSub">Discover events, festivals, and experiences happening across Armenia in real-time. Don’t miss a beat.</p>
-            <a class="btn-primary" href="#explore" id="exploreBtn">Explore What’s On →</a>
+            <a class="btn-primary" href="#explore" id="exploreBtn"
+onclick="gtag('event', 'explore_click', { event_category: 'engagement' });">
+Explore What’s On →
+</a>
           </section>
 
           <section class="seo-box">
@@ -569,7 +572,10 @@
           <section class="cta-card glass">
             <h3 id="ctaTitle">List Your Event on AYA</h3>
             <p id="ctaSub">Reach tourists and locals instantly. Increase bookings. Free to join.</p>
-            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtn">↗ List Your Event</a>
+            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtn"
+onclick="gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'list_event_desktop' });">
+↗ List Your Event
+</a>
           </section>
         </section>
 
@@ -595,7 +601,10 @@
           <section class="mobile-cta glass">
             <h3 id="ctaTitleMobile">List Your Event on AYA</h3>
             <p id="ctaSubMobile">Reach tourists and locals instantly. Increase bookings. Free to join.</p>
-            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtnMobile">↗ List Your Event</a>
+            <a href="https://my.ota.am" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="ctaBtnMobile"
+onclick="gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'list_event_mobile' });">
+↗ List Your Event
+</a>
           </section>
 
           <section class="mobile-seo glass">
@@ -738,6 +747,11 @@
       const t = translations[lang] || translations.en;
       document.documentElement.lang = lang;
       document.documentElement.dir = t.dir;
+      gtag('event', 'language_change', {
+    'event_category': 'engagement',
+    'language': lang
+  });
+
       ids.heroTitle.innerHTML = t.heroTitle;
       ids.heroSub.textContent = t.heroSub;
       ids.exploreBtn.innerHTML = t.exploreBtn;
