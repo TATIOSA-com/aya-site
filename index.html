@@ -31,6 +31,7 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="author" content="AYA" />
   <meta name="theme-color" content="#050505" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="AYA — Are You Around? | Events & Experiences in Armenia" />
   <meta property="og:description" content="Discover events, festivals, concerts, tours, food experiences, wine festivals, and cultural happenings across Armenia with AYA — Are You Around?" />
@@ -537,6 +538,12 @@
       .lang-select { padding: 9px 34px 9px 12px; font-size: 11px; min-width: 120px; }
     }
   </style>
+  <script>
+  // Prevent Safari from restoring iframe as main page
+  if (window.top !== window.self) {
+    window.top.location = window.location.href;
+  }
+</script>
 </head>
 <body>
   <div class="app">
@@ -600,11 +607,12 @@ onclick="gtag('event', 'cta_click', { event_category: 'conversion', event_label:
 
             <div class="iframe-shell" id="explore">
               <div class="iframe-container">
-                <iframe 
-  src="https://server.tatiosa.pro/events?k=OTA-1001" 
-  title="Events in Armenia Feed" 
+               <iframe 
+  src="https://server.tatiosa.pro/events?k=OTA-1001"
+  title="Events in Armenia Feed"
   loading="lazy"
-  sandbox="allow-scripts allow-same-origin allow-forms allow-popups">
+  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+  referrerpolicy="strict-origin-when-cross-origin">
 </iframe>
               </div>
               <div class="corner-top"></div>
