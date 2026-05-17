@@ -382,6 +382,28 @@
       background: #000;
     }
 
+    .iframe-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: rgba(255,255,255,.48);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      text-align: center;
+      pointer-events: none;
+      background: #000;
+      z-index: 1;
+    }
+
+    .iframe-container[data-iframe-state="loaded"] .iframe-placeholder {
+      display: none;
+    }
+
     .iframe-container iframe {
       position: absolute;
       top: 0;
@@ -539,11 +561,111 @@
     }
   </style>
   <script>
-  // Prevent Safari from restoring iframe as main page
-  if (window.top !== window.self) {
-    window.top.location = window.location.href;
-  }
-</script>
+    /*
+      Browser-restore protection for AYA.
+
+      The previous fix tried to redirect from inside an iframe with:
+      window.top.location = window.location.href;
+      That is unsafe and ineffective here because the iframe is cross-origin and
+      the iframe must never be allowed to navigate the top page.
+
+      This guard only runs in the parent/top document. It keeps aya.am canonical
+      in the browser history and redirects only if this HTML document is ever
+      restored or served under the event-feed host by mistake.
+    */
+    (function () {
+      'use strict';
+
+      var AYA_CANONICAL_URL = 'https://aya.am/';
+      var AYA_HOST = 'aya.am';
+      var AYA_WWW_HOST = 'www.aya.am';
+      var EVENT_FEED_HOST = 'server.tatiosa.pro';
+
+      function isTopDocument() {
+        try {
+          return window.self === window.top;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function reassertAyaCanonical(reason) {
+        if (!isTopDocument()) return;
+
+        var host = window.location.hostname;
+        var href = window.location.href;
+
+        /*
+          If this static HTML is ever restored under the iframe/event host,
+          replace the top-level document with the public AYA URL. This does not
+          run inside the real cross-origin iframe; it only protects accidental
+          restores of this parent document under the wrong host.
+        */
+        if (host === EVENT_FEED_HOST) {
+          window.location.replace(AYA_CANONICAL_URL);
+          return;
+        }
+
+        /*
+          Keep a single public canonical URL. Host/protocol changes need
+          location.replace() because history.replaceState() cannot change
+          origins. Path/search/hash cleanup uses replaceState() to avoid reloads.
+        */
+        if (host === AYA_WWW_HOST || (host === AYA_HOST && window.location.protocol !== 'https:')) {
+          window.location.replace(AYA_CANONICAL_URL);
+          return;
+        }
+
+        if (host === AYA_HOST && href !== AYA_CANONICAL_URL) {
+          try {
+            window.history.replaceState(
+              { ayaCanonical: true, reason: reason || 'canonical-reassert' },
+              document.title,
+              '/'
+            );
+          } catch (error) {
+            /*
+              replaceState can fail only in unusual browser/privacy states.
+              Do not reload-loop; leave the page usable.
+            */
+          }
+        }
+      }
+
+      window.AYA_REASSERT_CANONICAL = reassertAyaCanonical;
+
+      reassertAyaCanonical('head-start');
+
+      document.addEventListener('DOMContentLoaded', function () {
+        reassertAyaCanonical('domcontentloaded');
+      });
+
+      window.addEventListener('load', function () {
+        reassertAyaCanonical('load');
+      });
+
+      /*
+        pageshow fires when iOS Safari restores a page from bfcache.
+        persisted=true is the key Safari restore case, but the guard is safe
+        for all pageshow events.
+      */
+      window.addEventListener('pageshow', function (event) {
+        reassertAyaCanonical(event && event.persisted ? 'pageshow-bfcache' : 'pageshow');
+      });
+
+      document.addEventListener('visibilitychange', function () {
+        reassertAyaCanonical(document.visibilityState === 'visible' ? 'visibility-visible' : 'visibility-hidden');
+      });
+
+      /*
+        pagehide is the last chance before bfcache/session snapshot. Keeping the
+        parent URL canonical before the snapshot reduces restore pollution.
+      */
+      window.addEventListener('pagehide', function () {
+        reassertAyaCanonical('pagehide');
+      });
+    })();
+  </script>
 </head>
 <body>
   <div class="app">
@@ -606,14 +728,8 @@ onclick="gtag('event', 'cta_click', { event_category: 'conversion', event_label:
             </div>
 
             <div class="iframe-shell" id="explore">
-              <div class="iframe-container">
-               <iframe 
-  src="https://server.tatiosa.pro/events?k=OTA-1001"
-  title="Events in Armenia Feed"
-  loading="lazy"
-  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-  referrerpolicy="strict-origin-when-cross-origin">
-</iframe>
+              <div class="iframe-container" id="ayaEventsMount" data-src="https://server.tatiosa.pro/events?k=OTA-1001" data-iframe-state="waiting" aria-busy="true">
+                <div class="iframe-placeholder" id="ayaEventsPlaceholder">Loading events…</div>
               </div>
               <div class="corner-top"></div>
               <div class="corner-bottom"></div>
@@ -799,6 +915,244 @@ onclick="gtag('event', 'cta_click', { event_category: 'conversion', event_label:
     });
 
     setLanguage(localStorage.getItem('aya_lang') || 'en');
+  </script>
+
+  <script>
+    /*
+      Safe event-feed mounting.
+
+      The feed URL is intentionally stored in data-src and not placed in a
+      static iframe src attribute. Mobile browsers sometimes restore nested
+      iframe sessions aggressively; mounting the iframe only after the AYA parent
+      page is active makes the top-level document remain aya.am instead of
+      treating the iframe URL as the restored tab.
+
+      The iframe sandbox deliberately does NOT include allow-top-navigation or
+      allow-top-navigation-by-user-activation. The feed can run scripts, forms,
+      and popups, but it cannot replace the top-level AYA page.
+    */
+    (function () {
+      'use strict';
+
+      var CANONICAL_URL = 'https://aya.am/';
+      var FALLBACK_EVENTS_SRC = 'https://server.tatiosa.pro/events?k=OTA-1001';
+      var FRAME_SELECTOR = 'iframe[data-aya-events-frame="true"]';
+      var mount = document.getElementById('ayaEventsMount');
+      var exploreBtn = document.getElementById('exploreBtn');
+      var remountTimer = null;
+
+      function reassertCanonical(reason) {
+        if (typeof window.AYA_REASSERT_CANONICAL === 'function') {
+          window.AYA_REASSERT_CANONICAL(reason);
+          return;
+        }
+
+        /*
+          Fallback for very old browsers that somehow run this script before the
+          head guard exists. Same-origin replaceState only; no reload loop.
+        */
+        try {
+          if (window.self === window.top && window.location.hostname === 'aya.am' && window.location.href !== CANONICAL_URL) {
+            window.history.replaceState({ ayaCanonical: true, reason: reason || 'fallback' }, document.title, '/');
+          }
+        } catch (error) {}
+      }
+
+      function getEventsSrc() {
+        if (!mount) return FALLBACK_EVENTS_SRC;
+        return mount.getAttribute('data-src') || FALLBACK_EVENTS_SRC;
+      }
+
+      function setMountState(state) {
+        if (!mount) return;
+        mount.setAttribute('data-iframe-state', state);
+        mount.setAttribute('aria-busy', state === 'loaded' ? 'false' : 'true');
+      }
+
+      function currentFrame() {
+        return mount ? mount.querySelector(FRAME_SELECTOR) : null;
+      }
+
+      function buildFrame() {
+        var iframe = document.createElement('iframe');
+
+        iframe.setAttribute('data-aya-events-frame', 'true');
+        iframe.setAttribute('title', 'Events in Armenia Feed');
+        iframe.setAttribute('loading', 'lazy');
+        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+
+        /*
+          credentialless is ignored by browsers that do not support it. Where it
+          is supported, it gives the cross-origin feed an ephemeral credential
+          context, reducing cookie/session coupling with browser restore.
+        */
+        iframe.setAttribute('credentialless', '');
+
+        iframe.addEventListener('load', function () {
+          reassertCanonical('iframe-load');
+          setMountState('loaded');
+        });
+
+        iframe.addEventListener('error', function () {
+          setMountState('error');
+          scheduleRemount('iframe-error', 1200);
+        });
+
+        return iframe;
+      }
+
+      function mountEventsFrame(force) {
+        if (!mount) return null;
+
+        reassertCanonical(force ? 'mount-force' : 'mount');
+
+        var src = getEventsSrc();
+        var existing = currentFrame();
+
+        if (existing && !force) {
+          if (!existing.getAttribute('src')) {
+            existing.setAttribute('src', src);
+            setMountState('loading');
+          }
+          return existing;
+        }
+
+        if (existing) {
+          existing.removeAttribute('src');
+          existing.remove();
+        }
+
+        setMountState('loading');
+
+        var iframe = buildFrame();
+        mount.appendChild(iframe);
+
+        /*
+          Assign src after insertion and after the parent task has completed.
+          This keeps the feed out of the initial parsed document and avoids the
+          static iframe-src restore pattern that caused mobile tab pollution.
+        */
+        window.requestAnimationFrame(function () {
+          reassertCanonical('before-iframe-src');
+          iframe.setAttribute('src', src);
+        });
+
+        return iframe;
+      }
+
+      function parkEventsFrame(reason) {
+        if (!mount) return;
+
+        reassertCanonical(reason || 'park');
+
+        var existing = currentFrame();
+        if (existing) {
+          /*
+            Removing src before removal prevents the browser from preserving the
+            cross-origin frame as the active session-history item when iOS
+            Safari/Chrome snapshots the tab.
+          */
+          existing.removeAttribute('src');
+          existing.remove();
+        }
+
+        setMountState('parked');
+      }
+
+      function scheduleRemount(reason, delay) {
+        if (remountTimer) {
+          window.clearTimeout(remountTimer);
+        }
+
+        remountTimer = window.setTimeout(function () {
+          remountTimer = null;
+          if (document.visibilityState !== 'hidden') {
+            mountEventsFrame(true);
+            reassertCanonical(reason || 'scheduled-remount');
+          }
+        }, delay || 0);
+      }
+
+      function ensureFrame(reason) {
+        reassertCanonical(reason || 'ensure');
+
+        if (!mount) return;
+
+        var existing = currentFrame();
+        if (!existing || !existing.getAttribute('src')) {
+          mountEventsFrame(false);
+        }
+      }
+
+      /*
+        Keep the existing CTA behavior, but do not write #explore into the
+        address bar. Hash entries are harmless, but clearing them helps keep the
+        restored mobile tab exactly on https://aya.am/.
+      */
+      if (exploreBtn) {
+        exploreBtn.addEventListener('click', function (event) {
+          var target = document.getElementById('explore');
+          if (target && typeof target.scrollIntoView === 'function') {
+            event.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            reassertCanonical('explore-click');
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        scheduleRemount('domcontentloaded-mount', 0);
+      });
+
+      window.addEventListener('load', function () {
+        ensureFrame('window-load');
+      });
+
+      /*
+        iOS Safari restores bfcache pages with pageshow. If the frame was parked
+        before the snapshot, this remounts it inside the already-restored AYA
+        parent page rather than letting the browser promote the feed URL.
+      */
+      window.addEventListener('pageshow', function (event) {
+        ensureFrame(event && event.persisted ? 'pageshow-bfcache-mount' : 'pageshow-mount');
+      });
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') {
+          /*
+            Mobile browsers often snapshot tabs on background/close without a
+            full unload. Parking the iframe here is the strongest parent-side
+            protection against restoring server.tatiosa.pro as the main tab.
+          */
+          parkEventsFrame('visibility-hidden-park');
+        } else {
+          ensureFrame('visibility-visible-remount');
+        }
+      });
+
+      window.addEventListener('pagehide', function () {
+        /*
+          pagehide is used by Safari before bfcache. Park the iframe so the
+          stored parent document contains only the stable placeholder and the
+          aya.am history entry.
+        */
+        parkEventsFrame('pagehide-park');
+      });
+
+      window.addEventListener('focus', function () {
+        ensureFrame('window-focus');
+      });
+
+      /*
+        Last-resort safety: if an over-aggressive mobile restore leaves the page
+        visible but the iframe missing, remount it without changing the parent
+        URL. This also covers rare iframe load failures after bfcache restore.
+      */
+      window.setTimeout(function () {
+        ensureFrame('late-safety-check');
+      }, 2500);
+    })();
   </script>
 </body>
 </html>
